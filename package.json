@@ -1,0 +1,16 @@
+{
+  "name": "proyect-cli",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Carlos Ignacio Olano Mares",
+  "license": "ISC",
+  "dependencies": {
+    "figlet": "^1.7.0",
+    "inquirer": "^9.2.12",
+    "ora": "^7.0.1"
+  }
+}
