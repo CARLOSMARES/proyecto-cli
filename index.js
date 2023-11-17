@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { exec } from 'child_process';
 import inquirer from 'inquirer';
 import ora from 'ora';
@@ -52,7 +54,7 @@ function createProject(projectType, projectName) {
 }
 
 // Presentación del texto con Figlet
-figlet('Project CLI', (err, data) => {
+figlet('Create Project CLI', (err, data) => {
   if (err) {
     console.error('Error al generar el texto de presentación.');
     return;

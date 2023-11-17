@@ -1,4 +1,4 @@
-# Proyect CLI
+# Create Proyect CLI
 
 Este CLI te permite realizar diversas acciones relacionadas con repositorios y proyectos, proporcionando una interfaz interactiva para simplificar tareas comunes. Puedes clonar repositorios, crear proyectos en Angular, React o Ionic, eliminar repositorios y ejecutar comandos npm en repositorios clonados.
 
@@ -10,13 +10,13 @@ Para instalar y utilizar este CLI, sigue estos pasos:
 
 **2. Ejecuta el siguiente comando para instalar el CLI globalmente:**
 
-` npm install -g proyect-cli `
+` npm install -g create-proyect-cli `
 
 ## Uso
 
 Una vez instalado, puedes ejecutar el CLI desde cualquier ubicación en tu terminal usando el siguiente comando:
 
-`proyect-cli`
+`create-proyect-cli`
 
 El CLI te guiará a través de las diferentes acciones disponibles, proporcionando opciones interactivas para personalizar tu experiencia.
 
