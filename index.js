@@ -19,6 +19,37 @@ function cloneRepository(repoUrl, cloneLocation) {
   });
 }
 
+//Funcion para instalar dependencias
+function installdependencias(location) {
+  const install = 'npm install';
+  const installSpinner = ora('Instalando Dependencias..').start();
+  exec(`cd ${location}`, (error, stdout, stderr)=>{
+    if(error){
+      installSpinner.fail(`Error al ingresar a la carpeta: ${stderr}`)
+    }else {
+      exec(install, (error, stdout, stderr) => {
+        if (error) {
+          installSpinner.fail(`Error al Instalar las dependecias: ${stderr}`);
+        } else {
+          installSpinner.succeed('Dependencias Instaladas Exitosamente');
+        }
+      });
+    }
+  });
+}
+
+//Funcion para eliminar repo local
+function deleterepo(location) {
+  const deleteRepo = `rm -rf ${location}`;
+  const deleteSpinner = ora('Eliminando Repositorio Local..').start();
+  exec(deleteRepo, (error, stdout, stderr) => {
+    if (error) {
+      deleteSpinner.fail(`Error al Eliminar el repositorio: ${stderr}`);
+    } else {
+      deleteSpinner.succeed('Repositorio Eliminado Correctamente');
+    }
+  });
+}
 // Función para crear un proyecto en Angular, React o Ionic
 function createProject(projectType, projectName) {
   let createCommand = '';
@@ -66,7 +97,7 @@ figlet('Create Project CLI', (err, data) => {
       type: 'list',
       name: 'action',
       message: '¿Qué acción desea realizar?',
-      choices: ['Clonar repositorio', 'Crear proyecto'],
+      choices: ['Clonar repositorio', 'Crear proyecto', 'Instalar Dependencias', 'Eliminar Repositorio Local'],
     },
     {
       type: 'input',
@@ -76,9 +107,22 @@ figlet('Create Project CLI', (err, data) => {
     },
     {
       type: 'input',
+      name: 'repoUrl',
+      message: 'Ingrese la URL del repositorio local:',
+      when: (answers) => answers.action === 'Eliminar Repositorio Local',
+    },
+    {
+      type: 'input',
       name: 'cloneLocation',
       message: 'Ingrese la ubicación donde desea clonar el repositorio:',
       when: (answers) => answers.action === 'Clonar repositorio',
+      default: './',
+    },
+    {
+      type: 'input',
+      name: 'cloneLocation',
+      message: 'Ingrese la ubicación donde desea instalar las dependencias:',
+      when: (answers) => answers.action === 'Instalar Dependencias',
       default: './',
     },
     {
