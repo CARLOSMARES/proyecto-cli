@@ -107,7 +107,7 @@ figlet('Create Project CLI', (err, data) => {
     },
     {
       type: 'input',
-      name: 'repoUrl',
+      name: 'location',
       message: 'Ingrese la URL del repositorio local:',
       when: (answers) => answers.action === 'Eliminar Repositorio Local',
     },
@@ -120,7 +120,7 @@ figlet('Create Project CLI', (err, data) => {
     },
     {
       type: 'input',
-      name: 'cloneLocation',
+      name: 'location',
       message: 'Ingrese la ubicación donde desea instalar las dependencias:',
       when: (answers) => answers.action === 'Instalar Dependencias',
       default: './',
@@ -145,6 +145,10 @@ figlet('Create Project CLI', (err, data) => {
       cloneRepository(answers.repoUrl, answers.cloneLocation);
     } else if (answers.action === 'Crear proyecto') {
       createProject(answers.projectType, answers.projectName);
+    }else if (answers.action === 'Instalar Dependencias'){
+      installdependencias(answers.location);
+    } else if(answers.action === 'Eliminar Repositorio Local'){
+      deleteLocalRepo(answers.location);
     }
   });
 });
