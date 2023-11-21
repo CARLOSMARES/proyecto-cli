@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+  - "node" # Usa la última versión de Node.js
+
+deploy:
+  provider: npm
+  email: "microsystemags@hotmail.com"  # Tu dirección de correo electrónico asociada con tu cuenta de npm
+  api_key: "$NPM_TOKEN"        # Configura esta variable de entorno en la configuración de Travis CI
+
+branches:
+  only:
+    - main  # O el nombre de la rama que desees
