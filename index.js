@@ -72,7 +72,7 @@ function createProject(projectType, projectName) {
       createSpinnerText = 'Creando proyecto Ionic...';
       break;
     case 'api-express':
-      createCommand = `git clone https://github.com/josegutierrezalexander/api-express.git ${projectName}`;
+      createCommand = `git clone https://github.com/CARLOSMARES/api-express.git ${projectName}`;
       createSpinnerText = 'Clonando API Express...';
       break;
     default:
