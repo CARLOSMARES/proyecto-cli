@@ -4,6 +4,9 @@ import { exec } from 'child_process';
 import inquirer from 'inquirer';
 import ora from 'ora';
 import figlet from 'figlet';
+import fs from 'fs'
+import { stderr, stdout } from 'process';
+import { error } from 'console';
 
 // Función para clonar un repositorio
 function cloneRepository(repoUrl, cloneLocation) {
@@ -23,10 +26,10 @@ function cloneRepository(repoUrl, cloneLocation) {
 function installdependencias(location) {
   const install = 'npm install';
   const installSpinner = ora('Instalando Dependencias..').start();
-  exec(`cd ${location}`, (error, stdout, stderr)=>{
-    if(error){
+  exec(`cd ${location}`, (error, stdout, stderr) => {
+    if (error) {
       installSpinner.fail(`Error al ingresar a la carpeta: ${stderr}`)
-    }else {
+    } else {
       exec(install, (error, stdout, stderr) => {
         if (error) {
           installSpinner.fail(`Error al Instalar las dependecias: ${stderr}`);
@@ -40,9 +43,9 @@ function installdependencias(location) {
 
 //Funcion para eliminar repo local
 function deleterepo(location) {
-  const deleteRepo = `rm -rf ${location}`;
+  //const deleteRepo = `rm -rf ${location}`;
   const deleteSpinner = ora('Eliminando Repositorio Local..').start();
-  exec(deleteRepo, (error, stdout, stderr) => {
+  exec(fs.rmdir(location), (error, stdout, stderr) => {
     if (error) {
       deleteSpinner.fail(`Error al Eliminar el repositorio: ${stderr}`);
     } else {
@@ -68,6 +71,10 @@ function createProject(projectType, projectName) {
       createCommand = `npx ionic start ${projectName} blank`;
       createSpinnerText = 'Creando proyecto Ionic...';
       break;
+    case 'api-express':
+      createCommand = `git clone https://github.com/josegutierrezalexander/api-express.git ${projectName}`;
+      createSpinnerText = 'Clonando API Express...';
+      break;
     default:
       console.error('Tipo de proyecto no reconocido.');
       return;
@@ -84,6 +91,11 @@ function createProject(projectType, projectName) {
   });
 }
 
+function createAPIExpress(proyectoname) {
+  projectType = "api-express";
+  createProject(projectType, proyectoname);
+}
+
 // Presentación del texto con Figlet
 figlet('Create Project CLI', (err, data) => {
   if (err) {
@@ -98,6 +110,12 @@ figlet('Create Project CLI', (err, data) => {
       name: 'action',
       message: '¿Qué acción desea realizar?',
       choices: ['Clonar repositorio', 'Crear proyecto', 'Instalar Dependencias', 'Eliminar Repositorio Local'],
+    },
+    {
+      type: 'input',
+      name: 'proyectoname',
+      message: 'Ingrese el nombre del proyecto:',
+      when: (answers) => answers.action === 'api-rest',
     },
     {
       type: 'input',
@@ -129,7 +147,7 @@ figlet('Create Project CLI', (err, data) => {
       type: 'list',
       name: 'projectType',
       message: 'Seleccione el tipo de proyecto:',
-      choices: ['Angular', 'React', 'Ionic'],
+      choices: ['Angular', 'React', 'Ionic', `api-express`],
       when: (answers) => answers.action === 'Crear proyecto',
     },
     {
@@ -145,10 +163,12 @@ figlet('Create Project CLI', (err, data) => {
       cloneRepository(answers.repoUrl, answers.cloneLocation);
     } else if (answers.action === 'Crear proyecto') {
       createProject(answers.projectType, answers.projectName);
-    }else if (answers.action === 'Instalar Dependencias'){
+    } else if (answers.action === 'Instalar Dependencias') {
       installdependencias(answers.location);
-    } else if(answers.action === 'Eliminar Repositorio Local'){
+    } else if (answers.action === 'Eliminar Repositorio Local') {
       deleteLocalRepo(answers.location);
+    } else if (answers.action === 'api-express') {
+      createAPIExpress(answers.proyectoname);
     }
   });
 });
