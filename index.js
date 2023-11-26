@@ -5,8 +5,7 @@ import inquirer from 'inquirer';
 import ora from 'ora';
 import figlet from 'figlet';
 import fs from 'fs'
-import { stderr, stdout } from 'process';
-import { error } from 'console';
+import path from 'path';
 
 // Función para clonar un repositorio
 function cloneRepository(repoUrl, cloneLocation) {
@@ -43,16 +42,34 @@ function installdependencias(location) {
 
 //Funcion para eliminar repo local
 function deleterepo(location) {
-  //const deleteRepo = `rm -rf ${location}`;
   const deleteSpinner = ora('Eliminando Repositorio Local..').start();
-  exec(fs.rmdir(location), (error, stdout, stderr) => {
-    if (error) {
-      deleteSpinner.fail(`Error al Eliminar el repositorio: ${stderr}`);
-    } else {
-      deleteSpinner.succeed('Repositorio Eliminado Correctamente');
-    }
-  });
+
+  if (fs.existsSync(location)) {
+    fs.readdirSync(location).forEach((archivo) => {
+      const archivoPath = path.join(location, archivo);
+
+      if (fs.lstatSync(archivoPath).isDirectory()) {
+        // Llamamos recursivamente a la función para eliminar el subdirectorio
+        deleterepo(archivoPath);
+      } else {
+        // Si es un archivo, lo eliminamos
+        fs.unlinkSync(archivoPath);
+      }
+    });
+
+    // Finalmente, eliminamos el directorio
+    fs.rmdir(location, (error) => {
+      if (error) {
+        deleteSpinner.fail(`Error al Eliminar el repositorio: ${error}`);
+      } else {
+        deleteSpinner.succeed('Directorio eliminado correctamente.');
+      }
+    });
+  } else {
+    deleteSpinner.fail('El directorio no existe.');
+  }
 }
+
 // Función para crear un proyecto en Angular, React o Ionic
 function createProject(projectType, projectName) {
   let createCommand = '';
@@ -128,6 +145,7 @@ figlet('Create Project CLI', (err, data) => {
       name: 'location',
       message: 'Ingrese la URL del repositorio local:',
       when: (answers) => answers.action === 'Eliminar Repositorio Local',
+      default: './',
     },
     {
       type: 'input',
@@ -166,7 +184,7 @@ figlet('Create Project CLI', (err, data) => {
     } else if (answers.action === 'Instalar Dependencias') {
       installdependencias(answers.location);
     } else if (answers.action === 'Eliminar Repositorio Local') {
-      deleteLocalRepo(answers.location);
+      deleterepo(answers.location);
     } else if (answers.action === 'api-express') {
       createAPIExpress(answers.proyectoname);
     }
