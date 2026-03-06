@@ -1,0 +1,11 @@
+[package]
+name = "create-proyect-cli"
+version = "2.0.0"
+edition = "2021"
+authors = ["Carlos Ignacio Olano Mares"]
+description = "CLI para crear proyectos rápidamente"
+
+[dependencies]
+inquire = "0.6.2"      # El equivalente exacto a 'inquirer'
+spinners = "4.1.1"     # El equivalente a 'ora'
+figlet-rs = "0.1.5"    # El equivalente a 'figlet'
