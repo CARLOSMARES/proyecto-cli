@@ -1,6 +1,6 @@
 [package]
 name = "create-proyect-cli"
-version = "2.0.1"
+version = "2.0.3"
 edition = "2021"
 authors = ["Carlos Ignacio Olano Mares"]
 description = "CLI para crear proyectos rápidamente"
