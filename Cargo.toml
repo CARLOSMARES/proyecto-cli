@@ -5,6 +5,9 @@ edition = "2021"
 authors = ["Carlos Ignacio Olano Mares"]
 description = "CLI para crear proyectos rápidamente"
 repository = "https://github.com/CARLOSMARES/proyecto-cli"
+license = "GPL-3.0-or-later" # <--- ESTO ES LO IMPORTANTE
+keywords = ["cli", "generator", "rust", "workflow"]
+categories = ["command-line-utilities", "development-tools"]
 
 [package.metadata.wix]
 upgrade-guid = "F4A7337F-9A3F-4977-B3D8-3DD36584029A"
