@@ -1,6 +1,6 @@
 [package]
 name = "create-proyect-cli"
-version = "2.1.5"
+version = "2.1.6"
 edition = "2024"
 authors = ["Carlos Ignacio Olano Mares"]
 description = "CLI para crear proyectos rápidamente (Express, Rust, Python, Angular, Vue, React)"
@@ -75,6 +75,10 @@ panic = "abort"
 
 # nombre del paquete npm
 npm-package = "create-proyect-cli"
+
+# FORZAR TAR.GZ EN WINDOWS PARA QUE NPM PUEDA DESCOMPRIMIRLO
+windows-archive = ".tar.gz"
+unix-archive = ".tar.gz"
 
 # targets de compilación (x86_64 estándar y arm64 para Linux/Mac)
 targets = [
