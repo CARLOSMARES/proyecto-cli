@@ -69,7 +69,7 @@
 
         <Package Id='*'
             Keywords='Installer'
-            Description='CLI para crear proyectos rápidamente'
+            Description='CLI para crear proyectos rápidamente (Express, Rust, Python, Angular, Vue, React)'
             Manufacturer='Carlos Ignacio Olano Mares'
             InstallerVersion='450'
             Languages='1033'
