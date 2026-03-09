@@ -74,6 +74,9 @@ panic = "abort"
 
 # build para distribución
 
+[package.metadata.dist]
+artifacts = ["executable"]
+
 [profile.dist]
 inherits = "release"
 lto = "thin"
