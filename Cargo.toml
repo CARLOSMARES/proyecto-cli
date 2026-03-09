@@ -75,7 +75,7 @@ panic = "abort"
 # build para distribución
 
 [package.metadata.dist]
-artifacts = ["executable"]
+artifacts = ["executable", "zip", "msi"]
 
 [profile.dist]
 inherits = "release"
