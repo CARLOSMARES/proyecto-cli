@@ -1,81 +1,171 @@
 # Create Proyect CLI 🚀
 
-[![npm version](https://img.shields.io/npm/v/create-proyect-cli.svg)](https://www.npmjs.com/package/create-proyect-cli)
-[![Crates.io](https://img.shields.io/crates/v/create-proyect-cli.svg)](https://crates.io/crates/create-proyect-cli)
-[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
+**Create Proyect CLI** es una herramienta de línea de comandos diseñada para **acelerar la creación y gestión de proyectos de software** mediante una interfaz interactiva rápida y sencilla.
 
-Este CLI te permite realizar diversas acciones relacionadas con repositorios y proyectos, proporcionando una interfaz interactiva ultrarrápida para simplificar tareas comunes. Originalmente escrito en Node.js y ahora **reescrito en Rust para un rendimiento nativo y tiempos de inicio instantáneos**.
+Originalmente desarrollado en **Node.js**, este CLI fue **reescrito completamente en Rust** para ofrecer:
 
-Con esta herramienta puedes clonar repositorios, inicializar proyectos en múltiples lenguajes y frameworks, configurar bases de datos, contenedores Docker y gestionar dependencias de manera fluida.
+* ⚡ Inicio instantáneo
+* 🚀 Alto rendimiento
+* 🧠 Experiencia de CLI interactiva moderna
+* 📦 Distribución multiplataforma
 
-## 📦 Instalación
+Con esta herramienta puedes **crear proyectos, clonar repositorios, instalar dependencias y gestionar estructuras completas de aplicaciones** en segundos.
 
-Gracias a su nuevo motor en Rust, puedes instalar este CLI desde el ecosistema que prefieras:
+---
 
-### Opción 1: Vía NPM (Recomendado para desarrolladores web)
+# 📦 Instalación
 
-Si ya utilizas el ecosistema de JavaScript/Node.js, instala el binario globalmente a través de npm:
+Puedes instalar el CLI desde **dos ecosistemas diferentes**.
+
+## 1️⃣ Instalación con NPM (recomendado para desarrolladores web)
 
 ```bash
 npm install -g create-proyect-cli
 ```
 
-### Opción 2: Vía Cargo (Para usuarios de Rust)
+## 2️⃣ Instalación con Cargo (usuarios de Rust)
 
-Si tienes Rust instalado en tu sistema, puedes compilar e instalar la herramienta directamente desde `crates.io`:
+Si tienes Rust instalado:
 
 ```bash
 cargo install create-proyect-cli
 ```
 
-## 💻 Uso
+---
 
-Una vez instalado, abre tu terminal en cualquier ubicación y ejecuta:
+# 💻 Uso
+
+Una vez instalado, ejecuta el CLI desde cualquier directorio:
 
 ```bash
 create-proyect-cli
 ```
 
-El menú interactivo te guiará a través de las diferentes acciones disponibles, sin necesidad de recordar comandos o banderas complejas.
-
-## 🛠️ Acciones Disponibles
-
-### 1. Crear Proyecto (Generador Inteligente)
-Genera la estructura base para nuevos proyectos. El CLI soporta múltiples ecosistemas y te guiará con configuraciones interactivas:
-
-* **Frontend & Móvil:**
-  * Angular
-  * React
-  * Vue (Vite)
-  * Ionic
-* **Backend Avanzado (API Express - TypeScript):**
-  * Generación de estructura escalable (rutas, controladores, middlewares).
-  * **Bases de datos:** Elección interactiva entre MySQL, MongoDB, SQL Server, MariaDB o SQLite.
-  * **ORMs:** Configuración automática de Prisma, TypeORM o Mongoose.
-  * **Documentación:** Instalación opcional de Swagger (`swagger-ui-express`).
-  * **Docker:** Generación automática de `Dockerfile` y `docker-compose.yml` vinculando tu API con la base de datos seleccionada.
-* **Otros Lenguajes:**
-  * **Python:** Crea un proyecto base e inicializa automáticamente su entorno virtual (`venv`).
-  * **Rust:** Inicializa un proyecto nativo con Cargo.
-
-### 2. Clonar Repositorio
-Clona un repositorio Git proporcionando la URL y la ubicación destino, mostrando el progreso en tiempo real.
-
-### 3. Instalar Dependencias
-Navega automáticamente a la ubicación de tu proyecto y ejecuta la instalación de dependencias (`npm install`) en segundo plano.
-
-### 4. Eliminar Repositorio Local
-Borra de forma segura y recursiva un directorio o repositorio local especificando su ruta.
-
-## 🤝 Contribuir
-
-Si encuentras errores, tienes sugerencias de mejora o deseas agregar soporte para nuevos lenguajes, no dudes en crear un *issue* o enviar un *pull request* en el repositorio oficial.
-
-**¡Gracias por usar este CLI! Esperamos que acelere la creación de todos tus proyectos.**
+Se abrirá un **menú interactivo** donde podrás seleccionar la acción que deseas realizar.
 
 ---
 
-## 📄 Licencia y Autoría
+# 🛠️ Funcionalidades
 
-* **Autor:** Carlos Ignacio Olano Mares
-* **Licencia:** GPL
+## 🚀 Crear Proyecto
+
+Genera automáticamente estructuras completas de proyectos.
+
+### Frontend y Mobile
+
+* Angular
+* React
+* Vue (Vite)
+* Ionic
+
+### Backend (API Express + TypeScript)
+
+Genera una arquitectura backend moderna con:
+
+* rutas
+* controladores
+* middlewares
+* configuración base escalable
+
+Opciones disponibles durante la generación:
+
+**Bases de datos**
+
+* MySQL
+* MongoDB
+* SQL Server
+* MariaDB
+* SQLite
+
+**ORMs**
+
+* Prisma
+* TypeORM
+* Mongoose
+
+**Documentación**
+
+* Swagger (`swagger-ui-express`)
+
+**Contenedores**
+
+* Docker
+* Docker Compose
+
+---
+
+### Otros lenguajes
+
+También puedes crear proyectos base en:
+
+**Python**
+
+* proyecto inicial
+* entorno virtual (`venv`) automático
+
+**Rust**
+
+* proyecto inicial usando `cargo`
+
+---
+
+# 📂 Acciones Disponibles
+
+Además del generador de proyectos, el CLI permite realizar tareas comunes de desarrollo.
+
+## 📥 Clonar repositorio
+
+Clona cualquier repositorio Git indicando su URL y carpeta destino.
+
+## 📦 Instalar dependencias
+
+Detecta automáticamente el gestor de paquetes y ejecuta la instalación:
+
+* npm
+* pnpm
+* bun
+* deno
+
+## 🗑️ Eliminar repositorio local
+
+Elimina de forma segura directorios o proyectos locales desde la terminal.
+
+---
+
+# 🎯 Objetivo del proyecto
+
+Este CLI busca convertirse en una herramienta para:
+
+* ⚡ acelerar el bootstrap de proyectos
+* 🧰 automatizar configuraciones repetitivas
+* 🧠 mejorar la productividad de desarrolladores
+
+---
+
+# 🤝 Contribuir
+
+Las contribuciones son bienvenidas.
+
+Puedes ayudar de varias maneras:
+
+* reportando bugs
+* proponiendo nuevas features
+* enviando pull requests
+
+Repositorio oficial:
+
+<https://github.com/CARLOSMARES/proyecto-cli>
+
+---
+
+# 👨‍💻 Autor
+
+**Carlos Ignacio Olano Mares**
+
+---
+
+# 📄 Licencia
+
+Este proyecto está licenciado bajo **GPL-3.0**.
+
+Consulta el archivo `LICENSE` para más detalles.
