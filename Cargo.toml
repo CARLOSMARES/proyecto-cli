@@ -1,6 +1,6 @@
 [package]
 name = "create-proyect-cli"
-version = "2.1.4"
+version = "2.1.5"
 edition = "2024"
 authors = ["Carlos Ignacio Olano Mares"]
 description = "CLI para crear proyectos rápidamente (Express, Rust, Python, Angular, Vue, React)"
@@ -73,17 +73,16 @@ panic = "abort"
 
 [package.metadata.dist]
 
-# tipos de artefactos que se publicarán
-artifacts = ["executable", "zip", "msi"]
-
 # nombre del paquete npm
 npm-package = "create-proyect-cli"
 
-# targets de compilación
+# targets de compilación (x86_64 estándar y arm64 para Linux/Mac)
 targets = [
     "x86_64-pc-windows-msvc",
     "x86_64-unknown-linux-gnu",
-    "x86_64-apple-darwin"
+    "x86_64-apple-darwin",
+    "aarch64-apple-darwin",
+    "aarch64-unknown-linux-gnu"
 ]
 
 # ----------------------------------------
