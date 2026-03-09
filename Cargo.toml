@@ -1,6 +1,6 @@
 [package]
 name = "create-proyect-cli"
-version = "2.1.3"
+version = "2.1.4"
 edition = "2024"
 authors = ["Carlos Ignacio Olano Mares"]
 description = "CLI para crear proyectos rápidamente (Express, Rust, Python, Angular, Vue, React)"
@@ -78,9 +78,6 @@ artifacts = ["executable", "zip", "msi"]
 
 # nombre del paquete npm
 npm-package = "create-proyect-cli"
-
-# CI soportado
-ci = ["github"]
 
 # targets de compilación
 targets = [
