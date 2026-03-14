@@ -2,6 +2,7 @@ use super::{
     angular::generate_angular, express_api::generate_express_api, ionic::generate_ionic,
     python::generate_python, react::generate_react, rust::generate_rust, vue::generate_vue,
 };
+use inquire::{Confirm, Select};
 
 pub fn create_project(project_type: &str, name: &str) {
     match project_type {
@@ -18,7 +19,42 @@ pub fn create_project(project_type: &str, name: &str) {
         "Python" => generate_python(name),
 
         "API Express (TypeScript)" => {
-            generate_express_api(name, "MySQL", "Prisma", true, true, true, true)
+            let orm_options = vec!["Ninguno", "Prisma", "TypeORM"];
+            let orm = Select::new("Seleccione el ORM", orm_options)
+                .prompt()
+                .unwrap();
+
+            let (db, orm_value) = if orm == "Ninguno" {
+                (String::new(), String::new())
+            } else {
+                let db_options = vec!["MySQL", "PostgreSQL", "SQLite"];
+                let db = Select::new("Seleccione la base de datos", db_options)
+                    .prompt()
+                    .unwrap();
+                (db.to_string(), orm.to_string())
+            };
+
+            let jwt = Confirm::new("¿Desea incluir autenticación JWT?")
+                .with_default(true)
+                .prompt()
+                .unwrap();
+
+            let swagger = Confirm::new("¿Desea incluir Swagger?")
+                .with_default(true)
+                .prompt()
+                .unwrap();
+
+            let jest = Confirm::new("¿Desea incluir Jest para testing?")
+                .with_default(true)
+                .prompt()
+                .unwrap();
+
+            let winston = Confirm::new("¿Desea incluir Winston para logs?")
+                .with_default(true)
+                .prompt()
+                .unwrap();
+
+            generate_express_api(name, &db, &orm_value, jwt, swagger, jest, winston)
         }
 
         _ => println!("Tipo de proyecto no soportado"),

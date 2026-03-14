@@ -1,6 +1,6 @@
 [package]
 name = "create-proyect-cli"
-version = "2.1.6"
+version = "2.1.7"
 edition = "2024"
 authors = ["Carlos Ignacio Olano Mares"]
 description = "CLI para crear proyectos rápidamente (Express, Rust, Python, Angular, Vue, React)"
