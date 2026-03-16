@@ -10,6 +10,7 @@ pub mod vue;
 
 pub mod auth;
 pub mod clean_arch;
+pub mod docker;
 pub mod jest;
 pub mod prisma;
 pub mod swagger;

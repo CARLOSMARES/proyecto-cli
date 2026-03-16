@@ -54,7 +54,31 @@ pub fn create_project(project_type: &str, name: &str) {
                 .prompt()
                 .unwrap();
 
-            generate_express_api(name, &db, &orm_value, jwt, swagger, jest, winston)
+            let docker = Confirm::new("¿Desea incluir Docker?")
+                .with_default(false)
+                .prompt()
+                .unwrap();
+
+            let docker_compose = if docker {
+                Confirm::new("¿Desea incluir Docker Compose con base de datos?")
+                    .with_default(true)
+                    .prompt()
+                    .unwrap()
+            } else {
+                false
+            };
+
+            generate_express_api(
+                name,
+                &db,
+                &orm_value,
+                jwt,
+                swagger,
+                jest,
+                winston,
+                docker,
+                docker_compose,
+            )
         }
 
         _ => println!("Tipo de proyecto no soportado"),
