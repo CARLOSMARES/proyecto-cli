@@ -4,6 +4,29 @@ use super::{
 };
 use inquire::{Confirm, Select};
 
+use crate::actions::install_dependencies;
+
+fn init_git_repo(name: &str) {
+    println!("\n🔧  Initializing git repository...");
+    let output = std::process::Command::new("git")
+        .args(["init"])
+        .current_dir(name)
+        .output();
+
+    match output {
+        Ok(result) => {
+            if result.status.success() {
+                println!("✅  Git repository initialized successfully!\n");
+            } else {
+                println!("⚠️  Failed to initialize git repository");
+            }
+        }
+        Err(e) => {
+            println!("⚠️  Error running git: {}", e);
+        }
+    }
+}
+
 pub fn create_project(project_type: &str, name: &str) {
     match project_type {
         "React" => generate_react(name),
@@ -68,6 +91,11 @@ pub fn create_project(project_type: &str, name: &str) {
                 false
             };
 
+            let git_init = Confirm::new("¿Desea inicializar repositorio Git?")
+                .with_default(true)
+                .prompt()
+                .unwrap();
+
             generate_express_api(
                 name,
                 &db,
@@ -78,7 +106,22 @@ pub fn create_project(project_type: &str, name: &str) {
                 winston,
                 docker,
                 docker_compose,
-            )
+            );
+
+            if git_init {
+                init_git_repo(name);
+            }
+
+            let install_and_exit = Confirm::new("¿Desea instalar las dependencias y salir?")
+                .with_default(true)
+                .prompt()
+                .unwrap();
+
+            if install_and_exit {
+                install_dependencies(name);
+                println!("¡Hasta luego!");
+                std::process::exit(0);
+            }
         }
 
         _ => println!("Tipo de proyecto no soportado"),

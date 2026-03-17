@@ -4,7 +4,7 @@ use crate::actions::*;
 
 use crate::generators::router::create_project;
 
-const VERSION: &str = "2.1.8";
+const VERSION: &str = "2.1.9";
 
 pub fn start_cli() {
     loop {
