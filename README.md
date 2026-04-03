@@ -35,13 +35,63 @@ cargo install create-proyect-cli
 
 # 💻 Uso
 
-Una vez instalado, ejecuta el CLI desde cualquier directorio:
+El CLI soporta dos modos de operación:
+
+## Modo Interactivo (por defecto)
 
 ```bash
 create-proyect-cli
 ```
 
 Se abrirá un **menú interactivo** donde podrás seleccionar la acción que deseas realizar.
+
+## Modo Comandos
+
+```bash
+# Crear proyecto React
+create-proyect-cli create --template=react --name=my-app
+
+# Crear proyecto Vue
+create-proyect-cli generate --template=vue --name=my-vue-app
+
+# Crear API Express con Drizzle
+create-proyect-cli new --template=api --name=my-api --orm=drizzle --database=postgresql --jwt --security --swagger
+
+# Ver ayuda
+create-proyect-cli --help
+create-proyect-cli create --help
+```
+
+---
+
+# 🛠️ Comandos y Banderas
+
+## Subcomandos
+
+| Comando | Descripción |
+|---------|-------------|
+| `create` | Crear un nuevo proyecto |
+| `generate` | Generar un nuevo proyecto (alias de create) |
+| `new` | Crear un nuevo proyecto (alias de create) |
+| `interactive` | Iniciar el CLI en modo interactivo |
+
+## Banderas Disponibles
+
+| Bandera | Descripción | Valores |
+|--------|------------|---------|
+| `--template` | Tipo de proyecto | `react`, `vue`, `angular`, `ionic`, `api`, `rust`, `python` |
+| `--name` | Nombre del proyecto | string |
+| `--orm` | ORM a usar (API) | `drizzle`, `prisma`, `typeorm` |
+| `--database` | Base de datos | `mysql`, `postgresql`, `sqlite` |
+| `--jwt` | Incluir autenticación JWT | flag |
+| `--security` | Incluir seguridad (helmet, rate-limit, zod) | flag |
+| `--swagger` | Incluir Swagger | flag |
+| `--jest` | Incluir Jest para testing | flag |
+| `--winston` | Incluir Winston para logs | flag |
+| `--docker` | Incluir Docker | flag |
+| `--docker-compose` | Incluir Docker Compose con DB | flag |
+| `--git` | Inicializar repositorio Git | flag |
+| `--install` | Instalar dependencias automáticamente | flag |
 
 ---
 
@@ -53,59 +103,68 @@ Genera automáticamente estructuras completas de proyectos.
 
 ### Frontend y Mobile
 
-* Angular
-* React
-* Vue (Vite)
-* Ionic
+* **React** - Con Vite (`npm create vite`)
+* **Vue** - Con Vite (`npm create vite`)
+* **Angular**
+* **Ionic**
 
 ### Backend (API Express + TypeScript)
 
-Genera una arquitectura backend moderna con:
+Genera una arquitectura **SOLID** moderna con:
 
-* rutas
-* controladores
-* middlewares
-* configuración base escalable
+```
+src/
+├── domain/
+│   ├── entities/       # Interfaces y DTOs
+│   └── repositories/   # Interfaces de repositorio
+├── application/
+│   └── usecases/      # Casos de uso
+└── infrastructure/
+    ├── controllers/    # Controladores
+    ├── middleware/    # Middlewares (auth, error handling)
+    ├── repositories/  # Implementaciones
+    └── routes/       # Rutas
+```
 
-Opciones disponibles durante la generación:
+**Opciones de ORM:**
 
-**Bases de datos**
+* **Drizzle** - ORM moderno y liviano
+* **Prisma** - ORM robusto con migración
+* **TypeORM** - ORM con patrón ActiveRecord
 
-* MySQL
-* MongoDB
-* SQL Server
-* MariaDB
-* SQLite
+**Seguridad integrada:**
 
-**ORMs**
+* **Helmet** - Headers de seguridad
+* **express-rate-limit** - Limitación de peticiones
+* **Zod** - Validación de datos
+* **CORS** - Configuración de CORS
+* **JWT** - Autenticación con JSON Web Tokens
+* **bcryptjs** - Hash de contraseñas
 
-* Prisma
-* TypeORM
-* Mongoose
+**Documentación:**
 
-**Documentación**
+* **Swagger/OpenAPI** - Documentación automática (`swagger-ui-express`)
 
-* Swagger (`swagger-ui-express`)
+**Logging:**
 
-**Contenedores**
+* **Winston** - Sistema de logs configurable
 
-* Docker
-* Docker Compose
+**Testing:**
 
----
+* **Jest** - Framework de testing
 
-### Otros lenguajes
+**Contenedores:**
 
-También puedes crear proyectos base en:
+* **Docker** - Imagen optimizada
+* **Docker Compose** - Con base de datos
 
-**Python**
+### Python
 
-* proyecto inicial
-* entorno virtual (`venv`) automático
+* Proyecto base con `venv` automático
 
-**Rust**
+### Rust
 
-* proyecto inicial usando `cargo`
+* Proyecto base usando `cargo`
 
 ---
 
@@ -119,7 +178,7 @@ Clona cualquier repositorio Git indicando su URL y carpeta destino.
 
 ## 📦 Instalar dependencias
 
-Detecta automáticamente el gestor de paquetes y ejecuta la instalación:
+Detecta automáticamente el gestor de paquetes:
 
 * npm
 * pnpm
@@ -128,7 +187,33 @@ Detecta automáticamente el gestor de paquetes y ejecuta la instalación:
 
 ## 🗑️ Eliminar repositorio local
 
-Elimina de forma segura directorios o proyectos locales desde la terminal.
+Elimina de forma segura directorios o proyectos locales.
+
+---
+
+# 🎯 Ejemplos
+
+```bash
+# Crear proyecto React con todas las opciones
+create-proyect-cli create --template=react --name=my-app --install
+
+# Crear API Express con Drizzle y todas las features
+create-proyect-cli create --template=api --name=my-api \
+  --orm=drizzle \
+  --database=postgresql \
+  --jwt \
+  --security \
+  --swagger \
+  --jest \
+  --winston \
+  --docker \
+  --docker-compose \
+  --git \
+  --install
+
+# Crear proyecto Vue
+create-proyect-cli generate --template=vue --name=my-vue-app --install
+```
 
 ---
 
@@ -144,17 +229,15 @@ Este CLI busca convertirse en una herramienta para:
 
 # 🤝 Contribuir
 
-Las contribuciones son bienvenidas.
-
-Puedes ayudar de varias maneras:
+Las contribuciones son bienvenidas. Puedes ayudar de varias maneras:
 
 * reportando bugs
 * proponiendo nuevas features
 * enviando pull requests
 
-Repositorio oficial:
+**Repositorio oficial:**
 
-<https://github.com/CARLOSMARES/proyecto-cli>
+https://github.com/CARLOSMARES/proyecto-cli
 
 ---
 

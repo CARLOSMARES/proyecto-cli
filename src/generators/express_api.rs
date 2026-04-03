@@ -13,8 +13,9 @@ fn log_create_dir(dir: &str) {
 
 use super::{
     auth::generate_auth, clean_arch::generate_clean_arch, docker::generate_docker,
-    jest::generate_jest, prisma::generate_prisma, swagger::generate_swagger,
-    typeorm::generate_typeorm, winston::generate_winston,
+    drizzle::generate_drizzle, jest::generate_jest, prisma::generate_prisma,
+    security::generate_security, swagger::generate_swagger, typeorm::generate_typeorm,
+    winston::generate_winston,
 };
 
 pub fn generate_express_api(
@@ -22,6 +23,7 @@ pub fn generate_express_api(
     db: &str,
     orm: &str,
     jwt: bool,
+    security: bool,
     swagger: bool,
     jest: bool,
     winston: bool,
@@ -34,7 +36,7 @@ pub fn generate_express_api(
 
     fs::create_dir_all(base).unwrap();
 
-    generate_clean_arch(base, db, orm, jwt, swagger, winston);
+    generate_clean_arch(base, db, orm, jwt, security, swagger, winston);
 
     log_create_dir("src/");
     log_create_dir("src/domain/");
@@ -89,6 +91,19 @@ pub fn generate_express_api(
         log_creating("src/data-source.ts");
     }
 
+    if orm == "Drizzle" {
+        dependencies.push("drizzle-orm".to_string());
+        if db == "MySQL" {
+            dependencies.push("mysql2".to_string());
+        } else {
+            dependencies.push("postgres".to_string());
+        }
+        generate_drizzle(base, db);
+        log_create_dir("src/db/");
+        log_creating("src/db/schema.ts");
+        log_creating("src/db/index.ts");
+    }
+
     if jwt {
         dependencies.push("jsonwebtoken".to_string());
         dependencies.push("@types/jsonwebtoken".to_string());
@@ -120,6 +135,18 @@ pub fn generate_express_api(
         dependencies.push("winston".to_string());
         generate_winston(base);
         log_creating("src/infrastructure/logger.ts");
+    }
+
+    if security {
+        dependencies.push("helmet".to_string());
+        dependencies.push("express-rate-limit".to_string());
+        dependencies.push("zod".to_string());
+        generate_security(base);
+        log_create_dir("src/infrastructure/middleware/");
+        log_creating("src/infrastructure/middleware/cors.ts");
+        log_creating("src/infrastructure/middleware/helmet.ts");
+        log_creating("src/infrastructure/middleware/rateLimit.ts");
+        log_creating("src/infrastructure/middleware/validation.ts");
     }
 
     let deps_str = dependencies

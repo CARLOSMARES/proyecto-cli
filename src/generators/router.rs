@@ -42,7 +42,7 @@ pub fn create_project(project_type: &str, name: &str) {
         "Python" => generate_python(name),
 
         "API Express (TypeScript)" => {
-            let orm_options = vec!["Ninguno", "Prisma", "TypeORM"];
+            let orm_options = vec!["Ninguno", "Drizzle", "Prisma", "TypeORM"];
             let orm = Select::new("Seleccione el ORM", orm_options)
                 .prompt()
                 .unwrap();
@@ -61,6 +61,12 @@ pub fn create_project(project_type: &str, name: &str) {
                 .with_default(true)
                 .prompt()
                 .unwrap();
+
+            let security =
+                Confirm::new("¿Desea incluir seguridad (helmet, rate limit, validation)?")
+                    .with_default(true)
+                    .prompt()
+                    .unwrap();
 
             let swagger = Confirm::new("¿Desea incluir Swagger?")
                 .with_default(true)
@@ -101,6 +107,7 @@ pub fn create_project(project_type: &str, name: &str) {
                 &db,
                 &orm_value,
                 jwt,
+                security,
                 swagger,
                 jest,
                 winston,

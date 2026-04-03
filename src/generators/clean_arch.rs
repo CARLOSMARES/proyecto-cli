@@ -6,6 +6,7 @@ pub fn generate_clean_arch(
     db: &str,
     orm: &str,
     jwt: bool,
+    security: bool,
     swagger: bool,
     winston: bool,
 ) {
@@ -33,134 +34,300 @@ pub fn generate_clean_arch(
 "#,
     );
 
-    write_file(
-        &base.join("src/domain/entities/User.ts"),
-        r#"
-export class User {
-
-constructor(
-public id:number,
-public email:string,
-public password:string
-){}
-
+    let domain_entities = r#"
+export interface BaseEntity {
+    id: number;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
-"#,
+
+export interface IUser extends BaseEntity {
+    email: string;
+    password: string;
+    name?: string;
+}
+
+export interface CreateUserDTO {
+    email: string;
+    password: string;
+    name?: string;
+}
+
+export interface UpdateUserDTO {
+    email?: string;
+    password?: string;
+    name?: string;
+}
+
+export interface UserResponse {
+    id: number;
+    email: string;
+    name?: string;
+}
+"#;
+    write_file(&base.join("src/domain/entities/User.ts"), domain_entities);
+
+    let domain_repository = r#"
+import { IUser, CreateUserDTO, UpdateUserDTO, UserResponse } from '../entities/User';
+
+export interface IUserRepository {
+    findById(id: number): Promise<UserResponse | null>;
+    findByEmail(email: string): Promise<UserResponse | null>;
+    findAll(): Promise<UserResponse[]>;
+    create(data: CreateUserDTO): Promise<UserResponse>;
+    update(id: number, data: UpdateUserDTO): Promise<UserResponse>;
+    delete(id: number): Promise<void>;
+}
+"#;
+    write_file(
+        &base.join("src/domain/repositories/IUserRepository.ts"),
+        domain_repository,
     );
 
-    write_file(
-        &base.join("src/application/usecases/createUser.ts"),
-        r#"
-export class CreateUser{
+    let use_case_interface = r#"
+import { UserResponse, CreateUserDTO, UpdateUserDTO } from '../entities/User';
 
-execute(){}
-
+export interface IUserUseCase {
+    getUserById(id: number): Promise<UserResponse>;
+    getAllUsers(): Promise<UserResponse[]>;
+    createUser(data: CreateUserDTO): Promise<UserResponse>;
+    updateUser(id: number, data: UpdateUserDTO): Promise<UserResponse>;
+    deleteUser(id: number): Promise<void>;
 }
-"#,
+"#;
+    write_file(
+        &base.join("src/application/usecases/IUserUseCase.ts"),
+        use_case_interface,
+    );
+
+    let create_user_use_case = r#"
+import { IUserRepository } from '../../domain/repositories/IUserRepository';
+import { CreateUserDTO, UserResponse } from '../../domain/entities/User';
+
+export class CreateUserUseCase {
+    constructor(private userRepository: IUserRepository) {}
+
+    async execute(data: CreateUserDTO): Promise<UserResponse> {
+        const existing = await this.userRepository.findByEmail(data.email);
+        if (existing) {
+            throw new Error('Email already exists');
+        }
+        return this.userRepository.create(data);
+    }
+}
+"#;
+    write_file(
+        &base.join("src/application/usecases/CreateUserUseCase.ts"),
+        create_user_use_case,
+    );
+
+    let get_user_use_case = r#"
+import { IUserRepository } from '../../domain/repositories/IUserRepository';
+import { UserResponse } from '../../domain/entities/User';
+
+export class GetUserUseCase {
+    constructor(private userRepository: IUserRepository) {}
+
+    async execute(id: number): Promise<UserResponse> {
+        const user = await this.userRepository.findById(id);
+        if (!user) {
+            throw new Error('User not found');
+        }
+        return user;
+    }
+}
+"#;
+    write_file(
+        &base.join("src/application/usecases/GetUserUseCase.ts"),
+        get_user_use_case,
+    );
+
+    let delete_user_use_case = r#"
+import { IUserRepository } from '../../domain/repositories/IUserRepository';
+
+export class DeleteUserUseCase {
+    constructor(private userRepository: IUserRepository) {}
+
+    async execute(id: number): Promise<void> {
+        const user = await this.userRepository.findById(id);
+        if (!user) {
+            throw new Error('User not found');
+        }
+        return this.userRepository.delete(id);
+    }
+}
+"#;
+    write_file(
+        &base.join("src/application/usecases/DeleteUserUseCase.ts"),
+        delete_user_use_case,
+    );
+
+    let user_repository_impl = r#"
+import { IUserRepository } from '../../domain/repositories/IUserRepository';
+import { CreateUserDTO, UpdateUserDTO, UserResponse } from '../../domain/entities/User';
+
+export class UserRepository implements IUserRepository {
+    private users: UserResponse[] = [];
+
+    async findById(id: number): Promise<UserResponse | null> {
+        return this.users.find(u => u.id === id) || null;
+    }
+
+    async findByEmail(email: string): Promise<UserResponse | null> {
+        return this.users.find(u => u.email === email) || null;
+    }
+
+    async findAll(): Promise<UserResponse[]> {
+        return this.users;
+    }
+
+    async create(data: CreateUserDTO): Promise<UserResponse> {
+        const newUser: UserResponse = {
+            id: this.users.length + 1,
+            email: data.email,
+            name: data.name,
+        };
+        this.users.push(newUser);
+        return newUser;
+    }
+
+    async update(id: number, data: UpdateUserDTO): Promise<UserResponse> {
+        const index = this.users.findIndex(u => u.id === id);
+        if (index === -1) throw new Error('User not found');
+        
+        this.users[index] = { ...this.users[index], ...data };
+        return this.users[index];
+    }
+
+    async delete(id: number): Promise<void> {
+        const index = this.users.findIndex(u => u.id === id);
+        if (index === -1) throw new Error('User not found');
+        this.users.splice(index, 1);
+    }
+}
+"#;
+    write_file(
+        &base.join("src/infrastructure/repositories/UserRepository.ts"),
+        user_repository_impl,
     );
 
     write_file(
         &base.join("src/infrastructure/controllers/userController.ts"),
         r#"
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
+import { CreateUserUseCase } from '../../application/usecases/CreateUserUseCase';
+import { GetUserUseCase } from '../../application/usecases/GetUserUseCase';
+import { DeleteUserUseCase } from '../../application/usecases/DeleteUserUseCase';
+import { UserRepository } from '../repositories/UserRepository';
 
-export const getUser = (req: Request, res: Response) => {
-    res.json({ ok: true, user: { id: 1, email: 'test@example.com' } });
+const userRepository = new UserRepository();
+const createUserUseCase = new CreateUserUseCase(userRepository);
+const getUserUseCase = new GetUserUseCase(userRepository);
+const deleteUserUseCase = new DeleteUserUseCase(userRepository);
+
+export const getUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { id } = req.params;
+        const user = await getUserUseCase.execute(Number(id));
+        res.json({ success: true, data: user });
+    } catch (error) {
+        next(error);
+    }
 };
 
-export const createUser = (req: Request, res: Response) => {
-    res.json({ ok: true, message: 'User created' });
+export const createUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const user = await createUserUseCase.execute(req.body);
+        res.status(201).json({ success: true, data: user });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { id } = req.params;
+        await deleteUserUseCase.execute(Number(id));
+        res.json({ success: true, message: 'User deleted' });
+    } catch (error) {
+        next(error);
+    }
 };
 "#,
+    );
+
+    let error_handler = r#"
+import { Request, Response, NextFunction } from 'express';
+
+export class AppError extends Error {
+    constructor(
+        public statusCode: number,
+        public message: string,
+        public isOperational = true
+    ) {
+        super(message);
+        Object.setPrototypeOf(this, AppError.prototype);
+    }
+}
+
+export const errorHandler = (
+    err: Error,
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    if (err instanceof AppError) {
+        return res.status(err.statusCode).json({
+            success: false,
+            message: err.message,
+        });
+    }
+
+    console.error('Error:', err);
+    return res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+    });
+};
+"#;
+    write_file(
+        &base.join("src/infrastructure/middleware/errorHandler.ts"),
+        error_handler,
     );
 
     let route_content = if swagger {
         r#"
 import { Router } from 'express';
-import { getUser, createUser } from '../controllers/userController';
+import { getUser, createUser, deleteUser } from '../controllers/userController';
+import { errorHandler } from '../middleware/errorHandler';
 
 const router = Router();
 
-/**
- * @swagger
- * /health:
- *   get:
- *     summary: Health check endpoint
- *     responses:
- *       200:
- *         description: Server is healthy
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: string
- *                   example: ok
- */
 router.get('/health', (req, res) => {
     res.status(200).json({ status: 'ok' });
 });
 
-/**
- * @swagger
- * /:
- *   get:
- *     summary: Root endpoint
- *     responses:
- *       200:
- *         description: Welcome message
- *         content:
- *           text/plain:
- *             schema:
- *               type: string
- *               example: Express API
- */
 router.get('/', (req, res) => {
-    res.send('Express API');
+    res.send('Express API - SOLID Architecture');
 });
 
-/**
- * @swagger
- * /ping:
- *   get:
- *     summary: Ping endpoint
- *     responses:
- *       200:
- *         description: Pong response
- *         content:
- *           text/plain:
- *             schema:
- *               type: string
- *               example: pong
- */
 router.get('/ping', (req, res) => {
     res.send('pong');
 });
 
-/**
- * @swagger
- * /user:
- *   get:
- *     summary: Get user
- *     responses:
- *       200:
- *         description: User data
- *   post:
- *     summary: Create user
- *     responses:
- *       200:
- *         description: User created
- */
-router.get('/user', getUser);
+router.get('/user/:id', getUser);
 router.post('/user', createUser);
+router.delete('/user/:id', deleteUser);
+
+router.use(errorHandler);
 
 export default router;
 "#
     } else {
         r#"
 import { Router } from 'express';
-import { getUser, createUser } from '../controllers/userController';
+import { getUser, createUser, deleteUser } from '../controllers/userController';
+import { errorHandler } from '../middleware/errorHandler';
 
 const router = Router();
 
@@ -169,15 +336,18 @@ router.get('/health', (req, res) => {
 });
 
 router.get('/', (req, res) => {
-    res.send('Express API');
+    res.send('Express API - SOLID Architecture');
 });
 
 router.get('/ping', (req, res) => {
     res.send('pong');
 });
 
-router.get('/user', getUser);
+router.get('/user/:id', getUser);
 router.post('/user', createUser);
+router.delete('/user/:id', deleteUser);
+
+router.use(errorHandler);
 
 export default router;
 "#
@@ -207,7 +377,7 @@ const swaggerOptions = {
         info: {
             title: 'Express API',
             version: '1.0.0',
-            description: 'API Documentation',
+            description: 'API Documentation - SOLID Architecture',
         },
         servers: [
             {
@@ -266,7 +436,7 @@ export default app;
 
     let mut env_vars = vec!["PORT=3000".to_string(), "NODE_ENV=development".to_string()];
 
-    if orm == "Prisma" || orm == "TypeORM" {
+    if orm == "Prisma" || orm == "TypeORM" || orm == "Drizzle" {
         match db {
             "PostgreSQL" => {
                 env_vars.push("DB_HOST=localhost".to_string());
@@ -296,6 +466,10 @@ export default app;
 
     if winston {
         env_vars.push("LOG_LEVEL=info".to_string());
+    }
+
+    if security {
+        env_vars.push("CORS_ORIGIN=*".to_string());
     }
 
     let env_example = env_vars.join("\n");

@@ -1,7 +1,6 @@
 use std::process::Command;
 
 pub fn clone_repository(repo_url: &str, location: &str) {
-
     println!("Clonando repositorio...");
 
     let status = Command::new("git")
