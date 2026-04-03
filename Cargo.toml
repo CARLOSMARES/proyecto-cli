@@ -3,7 +3,6 @@ name = "create-proyect-cli"
 version = "2.2.0"
 authors = ["Carlos Ignacio Olano Mares <carlosignacio_olano@outlook.com>"]
 edition = "2024"
-authors = ["Carlos Ignacio Olano Mares"]
 description = "CLI para crear proyectos rápidamente (Express, Rust, Python, Angular, Vue, React)"
 repository = "https://github.com/CARLOSMARES/proyecto-cli"
 homepage = "https://github.com/CARLOSMARES/proyecto-cli"
